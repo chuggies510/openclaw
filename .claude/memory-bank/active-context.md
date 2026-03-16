@@ -1,5 +1,5 @@
 ---
-session: 3
+session: 4
 ---
 
 # OpenClaw Active Context
@@ -12,14 +12,56 @@ session: 3
 - **GitHub repo**: https://github.com/chuggies510/openclaw
 - **Tools**: exec + bash enabled; write/edit/process/apply_patch denied
 - **API key**: `~/.openclaw/.env` (chmod 600), EnvironmentFile in service
-- **Bot tokens**: rotated this session (bot + gateway)
 - **Workspace files**: IDENTITY.md, SOUL.md, USER.md, TOOLS.md, AGENTS.md, MEMORY.md on dev-pi at `~/.openclaw/workspace/`
 - **Crons**: daily-digest 8am Pacific (ac2c3d83), refresh-memory 2am Pacific (8d5cdeb7)
 - **HA access**: REST API at 192.168.3.3:8123, token at `~/2_project-files/_shared/secrets/chungus-net.env` as HA_API_TOKEN, all entity IDs in TOOLS.md
 
 ### Remaining Spike Work
-- Workspace files not committed to repo (only on dev-pi) — should be backed up
+- Workspace files not committed to repo (only on dev-pi) — openclaw#1
 - Evaluate: OpenClaw worth keeping or build handrolled Bun bot?
+
+---
+
+## CONTEXT HANDOFF - 2026-03-16 (Session 3)
+
+### Session Summary
+Rescue session — ran `/finish-stop 4` to complete S2's handoff after it hit context limit at 88%. No new technical work. Reconstructed S2 context from tmux + git forensics, committed memory bank updates (active-context.md, tech-context.md, system-patterns.md, CLAUDE.md, archive), and pushed.
+
+**Chat**: (filled in Phase 8)
+
+### Changes made
+
+| Change | Status |
+|--------|--------|
+| S2 handoff written to active-context.md | Done |
+| tech-context.md updated (bot config, infra, GitHub) | Done |
+| system-patterns.md updated (auth model, cron jobs, integration points) | Done |
+| CLAUDE.md updated (3 new gotchas) | Done |
+| active-context-batch-1.md archived | Done |
+| All changes committed and pushed [rescue] | Done |
+
+### Files modified
+- `.claude/memory-bank/active-context.md` — S2 handoff
+- `.claude/memory-bank/tech-context.md` — bot config section, infra table, GitHub repo
+- `.claude/memory-bank/system-patterns.md` — security model, context injection, cron jobs, integration points
+- `CLAUDE.md` — /new vs /compact gotcha, bootstrap file list gotcha, HA on infra-pi gotcha
+- `.claude/memory-bank/archive/active-context-batch-1.md` — created
+
+### Test Status
+No test suite.
+
+### Knowledge extracted
+None new (all S2 extractions were applied).
+
+### Decisions recorded
+None.
+
+### Next Session Priority
+Back up workspace files (SOUL.md, IDENTITY.md, TOOLS.md, MEMORY.md) to the GitHub repo (openclaw#1). Then evaluate: OpenClaw vs handrolled Bun bot.
+
+### Open Issues
+- openclaw#1: Workspace files not in repo — identity/config only on dev-pi filesystem
+- openclaw#2: refresh-memory cron uses agent message prompt instead of direct script exec
 
 ---
 
@@ -28,7 +70,7 @@ session: 3
 ### Session Summary
 Security hardening + full bot identity setup. Moved API key to .env file. Rotated both tokens. Wrote IDENTITY.md, SOUL.md, USER.md, TOOLS.md, MEMORY.md — bot now knows its identity, all project paths, HA entity IDs, and cross-project status. Confirmed read tool works with absolute paths. Enabled exec + bash so bot can run gh, git, curl. Wired up HA REST API access. Set up daily-digest cron and nightly MEMORY.md refresh cron. Created chuggies510/openclaw GitHub repo, closed chuggies#53.
 
-**Chat**: (filled in Phase 8)
+**Chat**: S2-openclaw-ha-tools-bash
 
 ### Changes made
 
@@ -76,38 +118,3 @@ Back up workspace files (SOUL.md, IDENTITY.md, TOOLS.md, MEMORY.md) to the GitHu
 ### Open Issues
 - Workspace files not in repo — identity/config only on dev-pi filesystem (no backup)
 - refresh-memory cron uses agent message prompt instead of direct script exec — may be unreliable
-
----
-
-## CONTEXT HANDOFF - 2026-03-15 (Session 1)
-
-### Session Summary
-Full OpenClaw spike session. Brainstormed problem space, decided to evaluate OpenClaw properly before building handrolled alternative. Installed on Dev Pi, connected Telegram, got bot responding, created system service, locked to read-only.
-
-**Chat**: S61-openclaw-spike-install
-
-### What was done
-
-| Task | Status |
-|------|--------|
-| Brainstorm: problem space, OpenClaw vs handrolled | Done |
-| Bootstrap openclaw project | Done |
-| `npm install -g openclaw@latest` | Done |
-| `openclaw onboard` — Telegram, Anthropic, Brave Search, hooks | Done |
-| Pairing approve own Telegram user (8218488161) | Done |
-| Fix API key (cached bad key in auth-profiles.json) | Done |
-| Create `/etc/systemd/system/openclaw-gateway.service` | Done |
-| Lock tools to read-only | Done |
-| Switch model to Haiku 4.5 | Done |
-
-### Key Findings
-
-| Finding | Detail |
-|---------|--------|
-| DietPi masks systemd-logind | Physical hardware — user-level systemd unavailable |
-| System-level service is correct pattern | Matches all other services on Dev Pi |
-| OpenClaw caches API key in auth-profiles.json | Changing env var alone doesn't fix billing errors |
-| `agents.defaults.model.primary` is the model config path | Not `agents.main.model` — wrong path crashes gateway |
-
-### Next Session Priority
-1. Rotate tokens, write bot identity, build cross-project status skill
