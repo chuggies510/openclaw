@@ -1,5 +1,5 @@
 ---
-session: 1
+session: 2
 ---
 
 # OpenClaw Active Context
@@ -13,15 +13,54 @@ session: 1
 - Config: `~/.openclaw/openclaw.json` on Dev Pi
 - Tools: read-only (write/edit/exec/bash/process/apply_patch denied)
 - Model: `anthropic/claude-haiku-4-5`
-- ANTHROPIC_API_KEY persisted in `~/.bashrc` on Dev Pi
+- ANTHROPIC_API_KEY in `~/.openclaw/.env` (chmod 600) — service uses EnvironmentFile
 - Brave Search enabled (api key in config)
 - Hooks: command-logger, session-memory
+- **Bot identity configured** — IDENTITY.md, SOUL.md, USER.md, TOOLS.md in `~/.openclaw/workspace/`
+- **Read tool confirmed working** with absolute paths outside workspace — bot can read all of `~/2_project-files/`
+- **Bot knows project map** — active-projects memory banks + client project config/workflow-state.yaml pattern
 
 ### Remaining Spike Work
-- Write BOOT.md — tell the bot who it is and what it knows
-- Custom skill: cross-project status (reads memory banks, pulls `gh issue list` across repos)
+- Token rotation: bot token (BotFather `/revoke`) + gateway token (`openclaw configure`) — still not done
+- Custom skill: cross-project status (optional — bot can already do this via read tool)
 - Proactive cron: daily digest pushed to Telegram
 - Evaluate: OpenClaw vs handrolled Bun bot decision
+
+---
+
+## CONTEXT HANDOFF - 2026-03-15 (Session 2)
+
+### Session Summary
+Picked up from live install. Fixed API key security (moved from world-readable service file to `~/.openclaw/.env` chmod 600). Wrote bot identity: IDENTITY.md, SOUL.md, USER.md, TOOLS.md deployed to `~/.openclaw/workspace/`. Confirmed read tool works with absolute paths — bot can read all of `~/2_project-files/`. TOOLS.md includes full project map (dev + client projects). Bot successfully synthesized cross-project status from memory banks unprompted.
+
+**Chat**: S62-openclaw-identity-and-access
+
+### What was done
+
+| Task | Status |
+|------|--------|
+| API key moved from service file to `~/.openclaw/.env` (chmod 600) | Done |
+| IDENTITY.md — bot name, purpose, file access | Done |
+| SOUL.md — behavior, what matters, what not to do | Done |
+| USER.md — Chris's info, timezone, active projects list | Done |
+| TOOLS.md — full project map, memory bank pattern, client projects, infra | Done |
+| Confirmed read tool works with absolute paths outside workspace | Done |
+| Bot tested: read all 5 memory banks, synthesized status correctly | Done |
+| Memory bank IP corrected: 192.168.3.11 → 192.168.3.4 | Done |
+| Memory bank Node version corrected: Node 22 → Node 24 | Done |
+
+### Key Findings
+
+| Finding | Detail |
+|---------|--------|
+| Read tool is NOT sandboxed to workspace | Bot can read any file chris can access via absolute paths |
+| Bootstrap files are a hardcoded list | AGENTS.md, SOUL.md, TOOLS.md, IDENTITY.md, USER.md, HEARTBEAT.md, BOOTSTRAP.md only — custom filenames ignored |
+| Dev Pi SSH alias is `dev-pi` (192.168.3.4, user chris) | Not `pi@192.168.3.11` as noted in old memory bank |
+
+### Next Session Priority
+1. Rotate bot token (BotFather `/revoke`) + gateway token (`openclaw configure`)
+2. Set up proactive cron — daily digest to Telegram
+3. Evaluate: OpenClaw worth keeping or build handrolled Bun bot?
 
 ---
 
@@ -67,7 +106,7 @@ Full OpenClaw spike session. Brainstormed problem space, decided to evaluate Ope
 - cmake needed for native module builds (sqlite-vec) — install before npm global install
 
 ### Next Session Priority
-1. Rotate bot token (BotFather `/revoke`) and gateway token (`openclaw configure`)
-2. Write BOOT.md for bot identity and ecosystem context
-3. Build cross-project status skill
+1. Rotate bot token (BotFather `/revoke`) + gateway token (`openclaw configure`)
+2. Set up proactive cron — daily digest to Telegram
+3. Evaluate: is OpenClaw worth keeping or build handrolled Bun bot?
 

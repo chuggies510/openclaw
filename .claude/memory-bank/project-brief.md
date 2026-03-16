@@ -17,7 +17,7 @@ Evaluate OpenClaw (formerly MoltBot) as a platform for a cross-project AI assist
 
 ## Constraints
 
-- Runs on Dev Pi (192.168.3.11) — ARM64 Debian, always on
+- Runs on Dev Pi (192.168.3.4) — ARM64 Debian, always on
 - Mac Mini M4 (16GB) available for LLM inference — currently running Qwen3:7B for podcast processing
 - Must not expose inbound ports (Telegram polling, not webhooks)
 - Phase 1 is read-only — no shell execution from LLM responses

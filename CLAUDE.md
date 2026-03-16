@@ -14,11 +14,11 @@ Cross-project AI assistant accessible via Telegram. Evaluating OpenClaw as the p
 
 ## Safety Rules
 
-- **Phase 1 is read-only.** No shell execution from LLM, no writes, no pushes.
 - API key spend capped in Anthropic console.
-- `ALLOWED_CHAT_IDS` auth gate — reject all messages before LLM unless from authorized chat.
+- `dmPolicy: pairing` auth gate — only paired Telegram users can interact.
 - Telegram polling (not webhooks) — no inbound port exposure on Dev Pi.
 - No secrets in repo. Use environment variables or `.env` (gitignored).
+- Tool deny list: write, edit, process, apply_patch. exec + bash enabled.
 
 ## Tooling
 
@@ -35,4 +35,4 @@ Cross-project AI assistant accessible via Telegram. Evaluating OpenClaw as the p
 
 ## GitHub
 
-- **Repo**: (to be created)
+- **Repo**: https://github.com/chuggies510/openclaw
