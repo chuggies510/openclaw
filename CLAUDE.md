@@ -32,6 +32,9 @@ Cross-project AI assistant accessible via Telegram. Evaluating OpenClaw as the p
 - **systemd-logind is masked** on DietPi physical hardware — user-level systemd won't work. Use system-level service instead.
 - **`--install-daemon` silently skips** when user systemd unavailable — create `/etc/systemd/system/openclaw-gateway.service` manually
 - **cmake required** before `npm install -g openclaw@latest` on Pi — needed for sqlite-vec native build
+- **`/new` in Telegram loses all conversation history** with no recovery — use `/compact` instead to preserve context while reducing tokens
+- **Bootstrap files are a hardcoded list** — custom filenames in workspace are ignored; must fold into AGENTS.md, SOUL.md, TOOLS.md, IDENTITY.md, USER.md, HEARTBEAT.md, or BOOTSTRAP.md
+- **HA config lives on infra-pi (192.168.3.3)** — bot runs on dev-pi, cannot `find`/`ls` infra-pi filesystem directly; use REST API
 
 ## GitHub
 

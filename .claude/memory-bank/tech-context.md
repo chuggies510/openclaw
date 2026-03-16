@@ -36,13 +36,31 @@ Skills are SKILL.md files with YAML frontmatter. The LLM reads the markdown at r
 
 | Machine | Role | Specs |
 |---------|------|-------|
-| Dev Pi | Bot host (always on) | ARM64 Debian, 192.168.3.4 |
+| Dev Pi | Bot host (always on) | ARM64 Debian, 192.168.3.4, SSH alias `dev-pi`, user `chris` |
+| Infra Pi | HA + network services | 192.168.3.3, user `dietpi` |
 | Mac Mini M4 | LLM inference | 16GB, running Ollama + Qwen3:7B |
-| 3900x | Workstation | Not always on |
+| 3900x | Workstation | Not always on, 192.168.3.11 |
+
+## Bot Config
+
+| Setting | Value |
+|---------|-------|
+| Model | `anthropic/claude-haiku-4-5` |
+| Config | `~/.openclaw/openclaw.json` |
+| API key | `~/.openclaw/.env` (chmod 600), EnvironmentFile in service |
+| Service | `/etc/systemd/system/openclaw-gateway.service` |
+| Workspace | `~/.openclaw/workspace/` |
+| Sessions | `~/.openclaw/agents/main/sessions/` |
+| Tool deny list | write, edit, process, apply_patch |
+| Tool allow | exec, bash, read (+ all others not denied) |
+
+## GitHub
+
+- **Chuggies Bot repo**: https://github.com/chuggies510/openclaw
 
 ## LLM Provider Plan
 
 | Phase | Provider | Cost |
 |-------|----------|------|
-| 1 | Claude API (Sonnet) | ~$3/$15 per 1M tokens |
+| 1 | Claude API (Haiku 4.5) | cheap |
 | 2 | Ollama on Mac Mini (Qwen3 or larger) | $0 |

@@ -27,19 +27,35 @@
 | Layer | Control |
 |-------|---------|
 | Network | Telegram polling (outbound only), no inbound ports |
-| Auth | ALLOWED_CHAT_IDS — reject before LLM |
-| Permissions | Phase 1: read-only (memory banks, issues, git logs) |
+| Auth | `dmPolicy: pairing` — only paired Telegram users can interact |
+| Permissions | exec + bash enabled; write/edit/process/apply_patch denied |
 | Cost | Anthropic console spend cap |
-| Secrets | .env file, gitignored, never in repo |
+| Secrets | ~/.openclaw/.env (chmod 600), never in repo |
+
+## Context Injection (session start)
+
+OpenClaw injects a hardcoded list of workspace files into every agent session:
+`AGENTS.md, SOUL.md, TOOLS.md, IDENTITY.md, USER.md, HEARTBEAT.md, BOOTSTRAP.md`
+
+- **MEMORY.md** is read by AGENTS.md instruction at session start (not auto-injected)
+- Custom filenames (e.g. PROJECTS.md) are ignored — must fold into the hardcoded list
+- Read tool works with absolute paths outside workspace — not sandboxed
+
+## Cron Jobs
+
+| Job | Schedule | Purpose |
+|-----|----------|---------|
+| daily-digest (ac2c3d83) | 8am Pacific | Cross-project status → Telegram DM |
+| refresh-memory (8d5cdeb7) | 2am Pacific | Rewrites MEMORY.md from all memory banks |
 
 ## Integration Points
 
-| Chuggies asset | How the bot reads it |
-|----------------|---------------------|
-| Memory banks | `cat ~/2_project-files/projects/active-projects/*/. claude/memory-bank/active-context.md` |
-| Open issues | `gh issue list --repo chuggies510/{repo}` |
-| Git activity | `git -C {repo_path} log --oneline -5` |
-| Session history | Claude JSONL files (if accessible) |
+| Asset | How the bot reads it |
+|-------|---------------------|
+| Memory banks | read tool, absolute path `~/2_project-files/projects/active-projects/{proj}/.claude/memory-bank/active-context.md` |
+| Open issues | `gh issue list --repo chuggies510/{repo}` via exec/bash |
+| HA entities/automations | `curl` against HA REST API at 192.168.3.3:8123 |
+| HA token | `grep HA_API_TOKEN ~/2_project-files/_shared/secrets/chungus-net.env | cut -d= -f2` |
 
 ## Evaluation Criteria
 
