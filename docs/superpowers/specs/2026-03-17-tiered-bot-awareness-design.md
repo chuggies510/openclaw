@@ -10,7 +10,7 @@ Two tiers of awareness, distributed through CLAUDE.md and memory banks.
 
 ### Tier 1 — Low Awareness
 
-**Repos:** All repos except chuggies, chungus-net, ChuggiesMart, openclaw.
+**Repos (existing):** meap2-it, home-assistant, chungus-blog, hire-chungus, podly-eval, meap-cli-cc, mo-marketing, pro-ject-pack, feature-dev-harnessed, meap3, and all client projects under `projects/client-projects/`.
 
 **Mechanism:** A block in CLAUDE.md, injected by ChuggiesMart's `/bootstrap-project` skill for new projects and added manually to existing ones.
 
@@ -19,7 +19,7 @@ Two tiers of awareness, distributed through CLAUDE.md and memory banks.
 ```markdown
 ## Chuggies Bot
 
-@chuggies_bot is a Telegram-based AI assistant that reads memory banks and issues across repos. It runs on Dev Pi (192.168.3.4) via OpenClaw. Your memory bank handoffs are consumed by the bot's nightly sweep — keep active-context.md structured and current.
+@chuggies_bot is a Telegram-based AI assistant that reads memory banks and issues across repos. It runs on Dev Pi (192.168.3.4) via OpenClaw. Your memory bank handoffs are consumed by the bot's nightly refresh (2am Pacific) — keep active-context.md structured and current.
 ```
 
 **Purpose:**
@@ -31,7 +31,9 @@ Two tiers of awareness, distributed through CLAUDE.md and memory banks.
 
 **Repos:** chuggies, chungus-net, ChuggiesMart, openclaw.
 
-**Mechanism:** Same CLAUDE.md block as Tier 1, plus a section in `tech-context.md`.
+**Mechanism:** Same CLAUDE.md block as Tier 1, plus a section in `.claude/memory-bank/tech-context.md`.
+
+**Note:** openclaw already has full awareness via its own CLAUDE.md and memory bank — no changes needed there. The Tier 2 additions apply to chuggies, chungus-net, and ChuggiesMart.
 
 **tech-context.md section content:**
 
@@ -82,7 +84,9 @@ ChuggiesMart owns skill definitions that the bot uses. Bot workspace files (SOUL
 
 ### Bootstrap Integration
 
-ChuggiesMart's `/bootstrap-project` skill adds the Tier 1 CLAUDE.md block to new projects automatically. High-awareness repos (3-4 total) are maintained manually since they rarely change.
+ChuggiesMart's `/bootstrap-project` skill adds the Tier 1 CLAUDE.md block to new projects automatically. The block is added unconditionally — all bootstrapped projects are Chuggies ecosystem projects. It goes as a top-level `## Chuggies Bot` section after the project-specific content in the generated CLAUDE.md.
+
+High-awareness repos (3 needing changes) are maintained manually since they rarely change.
 
 ## Scope
 
@@ -99,13 +103,19 @@ ChuggiesMart's `/bootstrap-project` skill adds the Tier 1 CLAUDE.md block to new
 
 ## Implementation Sequence
 
-1. Add CLAUDE.md block to existing low-awareness repos
-2. Add CLAUDE.md block + tech-context.md section to high-awareness repos (chuggies, chungus-net, ChuggiesMart)
+1. Add CLAUDE.md block to existing low-awareness repos (see Tier 1 repo list)
+2. Add CLAUDE.md block + tech-context.md section to chuggies, chungus-net, ChuggiesMart (openclaw already covered)
 3. Update ChuggiesMart `/bootstrap-project` skill to inject Tier 1 block
+
+## Acceptance Criteria
+
+- Every active repo under `projects/active-projects/` has the Tier 1 CLAUDE.md block (except openclaw which has its own)
+- chuggies, chungus-net, and ChuggiesMart each have the Tier 2 tech-context.md section
+- `/bootstrap-project` produces the Tier 1 block when scaffolding a new test project
 
 ## Risks
 
 | Risk | Mitigation |
 |------|------------|
 | Bot architecture changes after build-vs-adopt decision | CLAUDE.md block is generic enough to survive. tech-context.md sections get updated if platform changes. |
-| Stale awareness info | tech-context.md is loaded at session start and reviewed during memory audits |
+| Stale awareness info | Tier 1 block is intentionally generic (no version-specific details). Tier 2 tech-context.md sections are reviewed during memory audits. |
