@@ -1,5 +1,5 @@
 ---
-session: 4
+session: 5
 ---
 
 # OpenClaw Active Context
@@ -14,11 +14,58 @@ session: 4
 - **API key**: `~/.openclaw/.env` (chmod 600), EnvironmentFile in service
 - **Workspace files**: IDENTITY.md, SOUL.md, USER.md, TOOLS.md, AGENTS.md, MEMORY.md on dev-pi at `~/.openclaw/workspace/`
 - **Crons**: daily-digest 8am Pacific (ac2c3d83), refresh-memory 2am Pacific (8d5cdeb7)
-- **HA access**: REST API at 192.168.3.3:8123, token at `~/2_project-files/_shared/secrets/chungus-net.env` as HA_API_TOKEN, all entity IDs in TOOLS.md
+- **HA access**: REST API at 192.168.3.3:8123, token at `~/2_project-files/_shared/secrets/chungus-net.env` as HA_API_TOKEN
+- **Tiered bot awareness**: all active repos now know about @chuggies_bot (done S4)
 
 ### Remaining Spike Work
 - Workspace files not committed to repo (only on dev-pi) — openclaw#1
 - Evaluate: OpenClaw worth keeping or build handrolled Bun bot?
+
+---
+
+## CONTEXT HANDOFF - 2026-03-17 (Session 4)
+
+### Session Summary
+Designed and implemented tiered bot awareness across all Chuggies ecosystem repos. Brainstormed two-tier model, wrote spec and implementation plan, executed via subagents. 9 repos got Tier 1 CLAUDE.md blocks. 3 high-awareness repos (chuggies, chungus-net, ChuggiesMart) got Tier 2 tech-context.md sections. ChuggiesMart bootstrap skill updated to inject Tier 1 for new projects. workspace-toolkit bumped to 2.37.2, committed and pushed.
+
+**Chat**: (filled in Phase 8)
+
+### Changes made
+
+| Change | Status |
+|--------|--------|
+| Spec: tiered bot awareness design | Done |
+| Plan: 5-task implementation plan | Done |
+| Tier 1 CLAUDE.md blocks: 6 low-awareness repos | Done |
+| Tier 1 CLAUDE.md blocks: 3 high-awareness repos | Done |
+| Tier 2 tech-context.md: chuggies, chungus-net, ChuggiesMart | Done |
+| ChuggiesMart bootstrap skill injects Tier 1 for new projects | Done |
+| workspace-toolkit 2.37.1 → 2.37.2, committed + pushed | Done |
+
+### Files modified
+- `docs/superpowers/specs/2026-03-17-tiered-bot-awareness-design.md` — created
+- `docs/superpowers/plans/2026-03-17-tiered-bot-awareness.md` — created
+- `docs/superpowers/plans/2026-03-17-tiered-bot-awareness.md.tasks.json` — created
+- ChuggiesMart: `workspace-toolkit/skills/bootstrap-project/SKILL.md`, `.claude-plugin/plugin.json`, `CHANGELOG.md`
+- 9 repos: CLAUDE.md modified (Tier 1 block appended)
+- 3 repos: `.claude/memory-bank/tech-context.md` modified (Tier 2 section appended)
+
+### Test Status
+No test suite.
+
+### Knowledge extracted
+Nothing new — session was pure documentation changes.
+
+### Decisions recorded
+None.
+
+### Next Session Priority
+Back up workspace files (SOUL.md, IDENTITY.md, TOOLS.md, MEMORY.md) to GitHub repo (openclaw#1). Then evaluate: OpenClaw vs handrolled Bun bot.
+
+### Open Issues
+- openclaw#1: Workspace files not in repo — identity/config only on dev-pi filesystem
+- openclaw#2: refresh-memory cron uses agent message prompt instead of direct script exec
+- openclaw CLAUDE.md itself lacks a `## Chuggies Bot` section (minor, ~2 lines)
 
 ---
 
@@ -62,59 +109,3 @@ Back up workspace files (SOUL.md, IDENTITY.md, TOOLS.md, MEMORY.md) to the GitHu
 ### Open Issues
 - openclaw#1: Workspace files not in repo — identity/config only on dev-pi filesystem
 - openclaw#2: refresh-memory cron uses agent message prompt instead of direct script exec
-
----
-
-## CONTEXT HANDOFF - 2026-03-16 (Session 2)
-
-### Session Summary
-Security hardening + full bot identity setup. Moved API key to .env file. Rotated both tokens. Wrote IDENTITY.md, SOUL.md, USER.md, TOOLS.md, MEMORY.md — bot now knows its identity, all project paths, HA entity IDs, and cross-project status. Confirmed read tool works with absolute paths. Enabled exec + bash so bot can run gh, git, curl. Wired up HA REST API access. Set up daily-digest cron and nightly MEMORY.md refresh cron. Created chuggies510/openclaw GitHub repo, closed chuggies#53.
-
-**Chat**: S2-openclaw-ha-tools-bash
-
-### Changes made
-
-| Change | Status |
-|--------|--------|
-| API key moved to ~/.openclaw/.env (chmod 600) | Done |
-| Service updated to EnvironmentFile (key out of world-readable file) | Done |
-| Bot token rotated via BotFather | Done |
-| Gateway token rotated | Done |
-| IDENTITY.md written | Done |
-| SOUL.md written (includes full command list, behavior rules) | Done |
-| USER.md written | Done |
-| TOOLS.md written (project map, HA entities + automations, infra) | Done |
-| MEMORY.md written (synthesized cross-project status) | Done |
-| exec + bash enabled in tool deny list | Done |
-| HA REST API access configured in TOOLS.md | Done |
-| Daily digest cron — 8am Pacific, delivers to Telegram | Done |
-| refresh-memory cron — 2am Pacific, rewrites MEMORY.md from memory banks | Done |
-| GitHub repo chuggies510/openclaw created | Done |
-| chuggies#53 closed | Done |
-| CLAUDE.md updated: repo link, safety rules, Node version, IP | Done |
-| Memory bank IPs corrected (192.168.3.11 → 192.168.3.4) | Done |
-
-### Files modified
-- `.claude/memory-bank/active-context.md` — session 2 handoff
-- `CLAUDE.md` — repo link, updated safety rules
-- `~/.openclaw/workspace/` — all workspace files (not in repo yet)
-- `~/.openclaw/openclaw.json` — tokens, tool deny list
-- `/etc/systemd/system/openclaw-gateway.service` — EnvironmentFile
-
-### Test Status
-No test suite.
-
-### Knowledge extracted
-- tech-context.md: Dev Pi SSH alias, Node 24, tool deny list, token locations, GitHub repo
-- system-patterns.md: read tool not sandboxed, bootstrap file list, MEMORY.md pattern, cron setup
-- CLAUDE.md: /new vs /compact gotcha, token rotation done
-
-### Decisions recorded
-None.
-
-### Next Session Priority
-Back up workspace files (SOUL.md, IDENTITY.md, TOOLS.md, MEMORY.md) to the GitHub repo. Then evaluate: OpenClaw vs handrolled Bun bot — write up findings after a week of use.
-
-### Open Issues
-- Workspace files not in repo — identity/config only on dev-pi filesystem (no backup)
-- refresh-memory cron uses agent message prompt instead of direct script exec — may be unreliable
